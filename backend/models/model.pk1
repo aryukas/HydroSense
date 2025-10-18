@@ -1,0 +1,16 @@
+# backend/scripts/create_dummy_model.py
+import joblib
+from sklearn.linear_model import LinearRegression
+import numpy as np
+
+# Dummy data
+X = np.array([[0,0],[1,1],[2,2]])
+y = np.array([0,1,2])
+
+# Train dummy model
+model = LinearRegression()
+model.fit(X, y)
+
+# Save as model.pkl
+joblib.dump(model, "../models/model.pkl")
+print("Dummy model created at ../models/model.pkl")
