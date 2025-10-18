@@ -1,21 +1,16 @@
 # Python
 venv/
+backend/venv/
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 
-# Jupyter
-.ipynb_checkpoints
-
-# VS Code
-.vscode/
-
-# Next.js
+# Node / Next.js
 node_modules/
 .next/
 
-# Model binaries (optional)
+# Model / Large files
 *.pkl
 *.h5
 *.pt
