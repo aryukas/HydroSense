@@ -1,2 +1,21 @@
-"__pycache__/" 
-"venv/" 
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Jupyter
+.ipynb_checkpoints
+
+# VS Code
+.vscode/
+
+# Next.js
+node_modules/
+.next/
+
+# Model binaries (optional)
+*.pkl
+*.h5
+*.pt
