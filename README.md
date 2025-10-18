@@ -1,1 +1,1 @@
-"HydroSense" 
+HydroSense is an intelligent rainfall and precipitation prediction system using machine learning and environmental data (NDVI, temperature, wind speed, humidity, etc.). It forecasts rainfall patterns from 1 day to 1 year ahead based on seasonal and geographical factors.
