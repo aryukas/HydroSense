@@ -1,30 +1,14 @@
-import { useState } from "react";
+import React from "react";
 
-export default function PredictionCard({ onPredict }) {
-  const [duration, setDuration] = useState("1_day");
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onPredict({ duration });
-  };
+const PredictionCard = ({ value }) => {
+  if (!value) return null;
 
   return (
-    <form onSubmit={handleSubmit} className="p-4 border rounded-lg shadow-md">
-      <label className="block mb-2 font-bold">Select Prediction Duration:</label>
-      <select
-        value={duration}
-        onChange={(e) => setDuration(e.target.value)}
-        className="border rounded p-2 mb-4 w-full"
-      >
-        <option value="1_day">1 Day</option>
-        <option value="1_week">1 Week</option>
-        <option value="1_month">1 Month</option>
-        <option value="season">Season</option>
-        <option value="1_year">1 Year</option>
-      </select>
-      <button type="submit" className="bg-blue-500 text-white p-2 rounded">
-        Predict
-      </button>
-    </form>
+    <div className="p-6 bg-gradient-to-br from-blue-100 to-green-100 rounded-2xl shadow-md text-center mt-4">
+      <h2 className="text-2xl font-semibold">Predicted Rainfall</h2>
+      <p className="text-4xl font-bold text-blue-700 mt-2">{value.toFixed(2)} mm</p>
+    </div>
   );
-}
+};
+
+export default PredictionCard;
