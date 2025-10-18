@@ -3,14 +3,12 @@ venv/
 backend/venv/
 __pycache__/
 *.pyc
-*.pyo
-*.pyd
 
 # Node / Next.js
 node_modules/
 .next/
 
-# Model / Large files
+# Large files / models
 *.pkl
 *.h5
 *.pt

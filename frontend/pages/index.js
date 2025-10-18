@@ -1,32 +1,27 @@
 import { useState } from "react";
-import InputForm from "../components/InputForm";
-import PredictionCard from "../components/PredictionCard";
-import History from "../components/History";
-import { getPrediction } from "../utils/api";
+import PredictionForm from "../components/PredictionCard";
+import PredictionResult from "../components/PredictionResult";
+import PredictionHistory from "../components/PredictionHistory";
+import Chart from "../components/Charts";
+import { predictRainfall } from "../utils/api";
 
 export default function Home() {
-  const [predictions, setPredictions] = useState({});
+  const [result, setResult] = useState(null);
   const [history, setHistory] = useState([]);
 
-  const handlePredict = async (inputData) => {
-    const result = await getPrediction(inputData);
-    setPredictions(result);
-
-    const timestamp = new Date().toLocaleString();
-    const newHistory = Object.entries(result).map(([model, value]) => ({
-      timestamp,
-      model,
-      value,
-    }));
-    setHistory([...newHistory, ...history]);
+  const handlePredict = async (payload) => {
+    const data = await predictRainfall(payload);
+    setResult(data);
+    setHistory((prev) => [{ ...data, timestamp: new Date().toLocaleString() }, ...prev]);
   };
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">HydroSense Dashboard</h1>
-      <InputForm onPredict={handlePredict} />
-      <PredictionCard predictions={predictions} />
-      <History history={history} />
+    <div className="max-w-4xl mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">HydroSense Rainfall Prediction</h1>
+      <PredictionForm onPredict={handlePredict} />
+      <PredictionResult result={result} />
+      <Chart data={result} />
+      <PredictionHistory history={history} />
     </div>
   );
 }
