@@ -1,3 +1,20 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* 3D Background Gradient */
+body {
+  background: radial-gradient(circle at 30% 30%, #00172b, #000814 80%);
+  color: white;
+  font-family: 'Poppins', sans-serif;
+  min-height: 100vh;
+  background-attachment: fixed;
+}
+
+/* Smooth glow effect for glassmorphism */
+.glass {
+  backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+}
