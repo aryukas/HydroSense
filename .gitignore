@@ -1,14 +1,29 @@
 # Python
-venv/
-backend/venv/
 __pycache__/
 *.pyc
-
-# Node / Next.js
-node_modules/
-.next/
-
-# Large files / models
+*.pyo
 *.pkl
-*.h5
-*.pt
+*.joblib
+
+# Virtual env
+venv/
+.venv/
+ENV/
+env/
+
+# Datasets
+data/raw/*
+data/processed/*
+
+# Model outputs
+backend/models/*.pkl
+backend/models/*.csv
+
+# Node
+frontend/node_modules/
+frontend/.next/
+frontend/build/
+
+# System files
+.DS_Store
+Thumbs.db
