@@ -1,140 +1,78 @@
-"use client";
 import React, { useState } from "react";
-import { motion } from "framer-motion";
-import { FaCloudSun, FaLeaf, FaTint, FaWind } from "react-icons/fa";
+import { CloudRain, Thermometer, Droplets, Leaf } from "lucide-react";
 
-const InputForm = ({ onSubmit }) => {
-  // ✅ Safe initial state (fixes NDVI error)
+const InputForm = ({ onPredict }) => {
   const [formData, setFormData] = useState({
     NDVI: "",
     temperature: "",
     humidity: "",
-    windSpeed: "",
     rainfall: "",
-    vegetation: "",
   });
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [e.target.name]: e.target.value,
     }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit?.(formData);
+
+    if (!formData.NDVI || !formData.temperature || !formData.humidity || !formData.rainfall) {
+      alert("Please fill all fields.");
+      return;
+    }
+
+    onPredict(formData);
   };
 
+  const fields = [
+    { name: "NDVI", label: "NDVI Index", icon: Leaf, placeholder: "e.g. 0.45" },
+    { name: "temperature", label: "Temperature (°C)", icon: Thermometer, placeholder: "e.g. 28" },
+    { name: "humidity", label: "Humidity (%)", icon: Droplets, placeholder: "e.g. 60" },
+    { name: "rainfall", label: "Rainfall (mm)", icon: CloudRain, placeholder: "e.g. 15" },
+  ];
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 40 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-      className="w-full max-w-lg mx-auto p-6 rounded-2xl shadow-2xl 
-                 backdrop-blur-lg bg-white/10 border border-white/20"
-      style={{
-        background:
-          "linear-gradient(145deg, rgba(255,255,255,0.1), rgba(0,150,255,0.1))",
-      }}
+    <form
+      onSubmit={handleSubmit}
+      className="bg-white/30 backdrop-blur-lg border border-white/40 rounded-3xl shadow-xl p-8 w-full max-w-lg transition-transform duration-300 hover:shadow-2xl hover:-translate-y-1"
     >
-      <h2 className="text-2xl font-semibold text-center text-cyan-100 mb-6">
-        🌦️ Weather & Vegetation Inputs
-      </h2>
+      <h2 className="text-3xl font-bold text-blue-800 text-center mb-8">🌦️ Environmental Inputs</h2>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        {/* NDVI */}
-        <div className="flex items-center gap-3 bg-white/10 rounded-xl p-3">
-          <FaLeaf className="text-green-400 text-xl" />
-          <input
-            type="number"
-            name="NDVI"
-            step="0.01"
-            placeholder="NDVI Index"
-            value={formData?.NDVI || ""}
-            onChange={handleChange}
-            className="w-full bg-transparent outline-none text-white placeholder-gray-300"
-          />
-        </div>
+      <div className="space-y-5">
+        {fields.map(({ name, label, icon: Icon, placeholder }) => (
+          <div key={name}>
+            <label htmlFor={name} className="block text-sm font-semibold text-gray-700 mb-2">
+              {label}
+            </label>
+            <div className="flex items-center bg-white/80 rounded-2xl border border-gray-300 shadow-sm focus-within:ring-2 focus-within:ring-blue-400 transition">
+              <div className="p-3 text-blue-600">
+                <Icon size={22} />
+              </div>
+              <input
+                id={name}
+                name={name}
+                type="number"
+                step="any"
+                value={formData[name]}
+                onChange={handleChange}
+                placeholder={placeholder}
+                className="flex-1 bg-transparent p-3 rounded-2xl outline-none text-gray-800 placeholder-gray-400"
+              />
+            </div>
+          </div>
+        ))}
+      </div>
 
-        {/* Temperature */}
-        <div className="flex items-center gap-3 bg-white/10 rounded-xl p-3">
-          <FaCloudSun className="text-yellow-300 text-xl" />
-          <input
-            type="number"
-            name="temperature"
-            placeholder="Temperature (°C)"
-            value={formData?.temperature || ""}
-            onChange={handleChange}
-            className="w-full bg-transparent outline-none text-white placeholder-gray-300"
-          />
-        </div>
-
-        {/* Humidity */}
-        <div className="flex items-center gap-3 bg-white/10 rounded-xl p-3">
-          <FaTint className="text-blue-400 text-xl" />
-          <input
-            type="number"
-            name="humidity"
-            placeholder="Humidity (%)"
-            value={formData?.humidity || ""}
-            onChange={handleChange}
-            className="w-full bg-transparent outline-none text-white placeholder-gray-300"
-          />
-        </div>
-
-        {/* Wind Speed */}
-        <div className="flex items-center gap-3 bg-white/10 rounded-xl p-3">
-          <FaWind className="text-sky-400 text-xl" />
-          <input
-            type="number"
-            name="windSpeed"
-            placeholder="Wind Speed (km/h)"
-            value={formData?.windSpeed || ""}
-            onChange={handleChange}
-            className="w-full bg-transparent outline-none text-white placeholder-gray-300"
-          />
-        </div>
-
-        {/* Rainfall */}
-        <div className="flex items-center gap-3 bg-white/10 rounded-xl p-3">
-          <img src="/icons/rain.svg" alt="rain" className="w-5 h-5" />
-          <input
-            type="number"
-            name="rainfall"
-            placeholder="Rainfall (mm)"
-            value={formData?.rainfall || ""}
-            onChange={handleChange}
-            className="w-full bg-transparent outline-none text-white placeholder-gray-300"
-          />
-        </div>
-
-        {/* Vegetation */}
-        <div className="flex items-center gap-3 bg-white/10 rounded-xl p-3">
-          <img src="/icons/leaf.svg" alt="leaf" className="w-5 h-5" />
-          <input
-            type="text"
-            name="vegetation"
-            placeholder="Vegetation Type"
-            value={formData?.vegetation || ""}
-            onChange={handleChange}
-            className="w-full bg-transparent outline-none text-white placeholder-gray-300"
-          />
-        </div>
-
-        {/* Submit */}
-        <motion.button
-          type="submit"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="bg-gradient-to-r from-blue-400 via-cyan-400 to-teal-400 
-                     text-white font-semibold py-3 rounded-xl shadow-lg hover:shadow-cyan-500/30"
-        >
-          🔍 Predict Precipitation
-        </motion.button>
-      </form>
-    </motion.div>
+      <button
+        type="submit"
+        className="w-full mt-8 py-3 text-lg font-semibold text-white rounded-2xl bg-gradient-to-r from-blue-600 via-blue-700 to-teal-500 hover:from-teal-500 hover:to-blue-600 transition-all duration-300 shadow-lg hover:shadow-blue-300/50"
+      >
+        🔍 Predict
+      </button>
+    </form>
   );
 };
 

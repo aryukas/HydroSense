@@ -18,3 +18,15 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 20px;
 }
+input::placeholder {
+  color: #9ca3af;
+  font-style: italic;
+}
+
+form {
+  transition: transform 0.3s ease;
+}
+
+form:hover {
+  transform: translateY(-3px);
+}
