@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { CloudRain, Thermometer, Droplets, Leaf } from "lucide-react";
 
-const InputForm = ({ onPredict }) => {
+export default function InputForm({ onPredict }) {
   const [formData, setFormData] = useState({
     NDVI: "",
     temperature: "",
@@ -24,6 +24,7 @@ const InputForm = ({ onPredict }) => {
       return;
     }
 
+    console.log("Submitting form:", formData);
     onPredict(formData);
   };
 
@@ -74,6 +75,4 @@ const InputForm = ({ onPredict }) => {
       </button>
     </form>
   );
-};
-
-export default InputForm;
+}
