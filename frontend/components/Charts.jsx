@@ -1,97 +1,66 @@
 import React from "react";
-import { Bar } from "react-chartjs-2";
+import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
-  BarElement,
+  PointElement,
+  LineElement,
   Title,
   Tooltip,
   Legend,
 } from "chart.js";
-import ChartDataLabels from "chartjs-plugin-datalabels";
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-  ChartDataLabels
-);
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-export default function Charts({ data }) {
-  if (!data) return null;
+export default function Charts({ timeseries }) {
+  if (!timeseries || timeseries.length === 0) return <div className="text-sm text-sky-200/70">No timeseries data</div>;
 
-  const chartData = {
-    labels: ["NDVI", "Temperature (°C)", "Humidity (%)", "Rainfall (mm)"],
+  const labels = timeseries.map((t) => t.date);
+  const ndviData = timeseries.map((t) => Number(t.NDVI));
+  const rainData = timeseries.map((t) => Number(t.rainfall));
+
+  const data = {
+    labels,
     datasets: [
       {
-        label: "Environmental Inputs",
-        data: [data.NDVI, data.temperature, data.humidity, data.rainfall],
-        backgroundColor: [
-          "rgba(52, 211, 153, 0.7)", // NDVI - green
-          "rgba(59, 130, 246, 0.7)", // Temp - blue
-          "rgba(251, 191, 36, 0.7)", // Humidity - yellow
-          "rgba(239, 68, 68, 0.7)",  // Rainfall - red
-        ],
-        borderColor: [
-          "rgba(52, 211, 153, 1)",
-          "rgba(59, 130, 246, 1)",
-          "rgba(251, 191, 36, 1)",
-          "rgba(239, 68, 68, 1)",
-        ],
-        borderWidth: 2,
-        borderRadius: 6,
-        maxBarThickness: 50,
+        label: "NDVI",
+        data: ndviData,
+        yAxisID: "y1",
+        tension: 0.2,
+      },
+      {
+        label: "Rainfall (mm)",
+        data: rainData,
+        yAxisID: "y2",
+        type: "bar",
       },
     ],
   };
 
   const options = {
     responsive: true,
-    plugins: {
-      legend: {
-        display: false, // remove legend to reduce clutter
-      },
-      title: {
-        display: true,
-        text: "🌿 Environmental Data Overview",
-        color: "white",
-        font: { size: 20, weight: "bold" },
-      },
-      tooltip: {
-        enabled: true,
-        callbacks: {
-          label: function (context) {
-            return `${context.label}: ${context.raw}`;
-          },
-        },
-      },
-      datalabels: {
-        color: "white",
-        anchor: "end",
-        align: "end",
-        font: { weight: "bold", size: 14 },
-      },
-    },
+    plugins: { legend: { position: "top", labels: { color: "#fff" } } },
     scales: {
-      x: {
-        ticks: { color: "white", font: { size: 14, weight: "bold" } },
-        grid: { display: false },
+      y1: {
+        type: "linear",
+        position: "left",
+        min: 0,
+        max: 1,
+        ticks: { color: "#fff" },
       },
-      y: {
-        ticks: { color: "white", font: { size: 14 } },
-        grid: { color: "rgba(255,255,255,0.1)" },
-        beginAtZero: true,
+      y2: {
+        type: "linear",
+        position: "right",
+        ticks: { color: "#fff" },
       },
+      x: { ticks: { color: "#fff" } },
     },
   };
 
   return (
-    <div className="mt-6 bg-gradient-to-br from-blue-800/40 via-teal-800/30 to-indigo-900/40 p-6 rounded-2xl shadow-xl border border-white/20">
-      <Bar data={chartData} options={options} plugins={[ChartDataLabels]} />
+    <div style={{ background: "transparent" }}>
+      <Line data={data} options={options} />
     </div>
   );
 }

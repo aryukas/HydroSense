@@ -20,3 +20,10 @@ module.exports = {
   },
   plugins: [],
 };
+
+module.exports = {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {},
+  },
+};
