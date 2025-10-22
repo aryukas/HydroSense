@@ -1,7 +1,7 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import React, { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 
 // Components
 import Sidebar from "../components/Sidebar";
@@ -18,7 +18,7 @@ export default function Home() {
   const [districtStats, setDistrictStats] = useState(null);
   const [predictionData, setPredictionData] = useState(null);
 
-  // Fetch stats whenever a district is selected
+  // Fetch district stats whenever a district is selected
   useEffect(() => {
     if (!selectedDistrict) return;
 
@@ -37,14 +37,11 @@ export default function Home() {
     fetchStats();
   }, [selectedDistrict]);
 
-  // Handle predictions from InputForm
-  const handlePredict = (formData) => {
-    setPredictionData(formData);
-  };
+  const handlePredict = (formData) => setPredictionData(formData);
 
   return (
     <div className="relative min-h-screen bg-gradient-to-b from-sky-900 via-sky-800 to-emerald-900 text-white overflow-hidden flex flex-col">
-      {/* Background 3D effects */}
+      {/* 3D Background */}
       <Background3D />
 
       {/* Header */}
@@ -64,7 +61,7 @@ export default function Home() {
           <IndiaMap onSelectDistrict={setSelectedDistrict} />
         </div>
 
-        {/* Right Sidebar / Controls */}
+        {/* Sidebar / Controls */}
         <div className="md:col-span-1 flex flex-col gap-6">
           <Sidebar data={districtStats} />
           <InputForm onPredict={handlePredict} />

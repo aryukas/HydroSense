@@ -1,74 +1,62 @@
 "use client";
 
-import { MapContainer, TileLayer, useMap } from "react-leaflet";
-import { useEffect, useState } from "react";
-import L from "leaflet";
-import "leaflet.heat";
+import React, { useEffect, useState } from "react";
+import ReactECharts from "echarts-for-react";
+import * as echarts from "echarts/core";
+import { GeoComponent, TooltipComponent, VisualMapComponent } from "echarts/components";
+import { MapChart } from "echarts/charts";
+import { CanvasRenderer } from "echarts/renderers";
 
-// Heatmap component
-const HeatmapLayer = ({ points }) => {
-  const map = useMap();
+echarts.use([GeoComponent, MapChart, CanvasRenderer, TooltipComponent, VisualMapComponent]);
 
-  useEffect(() => {
-    if (!points || points.length === 0) return;
-
-    const heatLayer = L.heatLayer(points, {
-      radius: 25,
-      blur: 20,
-      maxZoom: 10,
-      gradient: { 0.1: "blue", 0.3: "cyan", 0.5: "lime", 0.7: "yellow", 1.0: "red" },
-    }).addTo(map);
-
-    return () => map.removeLayer(heatLayer);
-  }, [points, map]);
-
-  return null;
-};
-
-const IndiaMap = ({ height = "500px", width = "700px" }) => {
-  const [heatData, setHeatData] = useState([]);
+export default function IndiaMap({ height = "70vh", width = "100%" }) {
+  const [option, setOption] = useState(null);
 
   useEffect(() => {
-    async function loadGeo() {
-      const res = await fetch("/data/india_districts.geojson");
-      const geoJson = await res.json();
+    async function loadMap() {
+      try {
+        const res = await fetch("/data/india_states.json");
+        if (!res.ok) throw new Error("Failed to fetch GeoJSON");
 
-      // Convert GeoJSON to heatmap points [lat, lng, intensity]
-      const points = geoJson.features.map((f) => {
-        const coords = f.properties.center || f.geometry.coordinates[0][0];
-        const lat = coords[1];
-        const lng = coords[0];
-        const intensity = f.properties.precipitation || 0;
-        return [lat, lng, intensity];
-      });
+        const geoJson = await res.json();
+        echarts.registerMap("india", geoJson);
 
-      setHeatData(points);
+        const data = geoJson.features.map((f) => ({
+          name: f.properties.name,
+          value: Math.floor(Math.random() * 250), // replace with actual precipitation
+        }));
+
+        setOption({
+          tooltip: { trigger: "item", formatter: "{b}<br/>Precipitation: {c} mm" },
+          visualMap: {
+            min: 0,
+            max: 250,
+            left: "right",
+            top: "bottom",
+            text: ["High", "Low"],
+            inRange: { color: ["#c6dbef", "#6baed6", "#2171b5", "#084594"] },
+            calculable: true,
+          },
+          series: [
+            {
+              name: "Precipitation",
+              type: "map",
+              map: "india",
+              roam: true,
+              emphasis: { label: { show: true } },
+              data,
+            },
+          ],
+        });
+      } catch (err) {
+        console.error("Failed to load map:", err);
+      }
     }
 
-    loadGeo();
+    loadMap();
   }, []);
 
-  return (
-    <div
-      id="map"
-      style={{
-        height,
-        width,
-        margin: "0 auto",
-        borderRadius: "12px",
-        overflow: "hidden",
-        boxShadow: "0 6px 15px rgba(0,0,0,0.25)",
-      }}
-    >
-      <MapContainer center={[22.5, 79]} zoom={5} style={{ height: "100%", width: "100%" }}>
-        <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution="&copy; OpenStreetMap contributors"
-        />
-        <HeatmapLayer points={heatData} />
-      </MapContainer>
-    </div>
-  );
-};
+  if (!option) return <div className="text-center mt-10">Loading map...</div>;
 
-export default IndiaMap;
+  return <ReactECharts option={option} style={{ height, width }} />;
+}
