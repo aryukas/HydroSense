@@ -41,3 +41,46 @@ form {
 form:hover {
   transform: translateY(-3px);
 }
+/* Container for the map */
+#map {
+  height: 400px;            /* Adjust the height as needed */
+  width: 600px;             /* Adjust the width as needed */
+  margin: 20px auto;        /* Center the map horizontally */
+  border-radius: 12px;      /* Rounded corners */
+  overflow: hidden;         /* Clip overflowing map tiles */
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25); /* Soft shadow */
+  z-index: 1;
+  background: transparent;
+  transition: transform 0.2s ease-in-out;
+}
+
+/* Leaflet map container */
+.leaflet-container {
+  height: 100% !important;
+  width: 100% !important;
+  background: transparent !important;
+  border-radius: 12px;
+}
+
+/* GeoJSON district hover effect */
+.leaflet-interactive {
+  cursor: pointer;
+  transition: fill-opacity 0.2s, transform 0.2s;
+}
+
+.leaflet-interactive:hover {
+  fill-opacity: 1 !important; /* Highlight on hover */
+  transform: scale(1.02);
+}
+
+/* Optional: popup styling */
+.leaflet-popup-content-wrapper {
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border-radius: 6px;
+  padding: 6px 10px;
+}
+
+.leaflet-popup-tip {
+  background: rgba(0, 0, 0, 0.8);
+}
